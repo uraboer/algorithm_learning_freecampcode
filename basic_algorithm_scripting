@@ -203,22 +203,112 @@ newarr.push(arr.slice(i,i+size));
   	return newarr;
 }
 
-11.Slasher Flick
+11.Slasher Flick：截断数组
+返回一个数组被截断n个元素后还剩余的元素，截断从索引0开始
+资源：
+1.slice()包含从start到end（不含）的arrayObject中的元素
+2.begin必需，规定从何处开始选取。如果是负数，从数组尾部开始算起。-1，最后一个元素
+3.splice()向/从数组中添加/删除项目，然后返回被删除的项目，splice() 方法会直接对数组进行修改
+方法：
+function slasher(arr,howMany){
+if(howMany<arr.length){
+arr.splice(0,howMany);
+retrun arr;
+}
+arr=[];
+return arr;
+}
 
 12.Mutations
+蛤蟆可以吃队友，也可以吃对手。
+如果数组第一个字符串元素包含了第二个字符串元素的所有字符，函数返回true
+举例，["hello", "Hello"]应该返回true，因为在忽略大小写的情况下，第二个字符串的所有字符都可以在第一个字符串找到。
+["hello", "hey"]应该返回false，因为字符串"hello"并不包含字符"y"。
+["Alien", "line"]应该返回true，因为"line"中所有字符都可以在"Alien"找到。
+思路：
+1.先分割第二个字符串为数组
+2.for循环遍历数组元素与第一个字符串进行比对
+3.都转化为小写，indexOf不包含的情况会返回-1；
+方法：
+function mutation(arr){
+var arr1=arr[0].toLowerCase();
+var arr2=arr[1].toLowerCase().split("");
+for(var i=0;i<arr2.length;i++){
+if(arr1.indexOf(arr2[i])<0){
+return false;
+}
+}
+return true;
+}
 
-13.Falsy Bouncer
+13.Falsy Bouncer：真假美猴王
+删除数组中的所有假值
+在JavaScript中，假值有false、null、0、""、undefined、NaN
+方法：
+function bouncer(arr) {
+return arr.filter(function(item){  //filter()过滤出所有boolean为true的
+return Boolean(item);
+});
+}
 
-14.Seek and Destroy
+14.Seek and Destroy：摧毁数组
+实现一个摧毁函数，第一个参数是待摧毁的数组，其余的参数是待摧毁的值（其余参数长度不定）
+思路：
+1.因为arguments是类数组对象没有数组所具有的属性和方法，所以创建一个包含其余参数的数组
+2.创建函数用indexOf()返回数组中不存在的元素
+3.通过filter()来过滤掉arguments中要摧毁的元素
+//在JavaScript中，arguments对象是比较特别的一个对象，实际上是当前函数的一个内置属性。arguments非常类似Array，但实际上又不是一个Array实例。
+方法：
+function destroyer(arr){
+var args=[];   //创建包含其余参数的数组
+for(var i=1;i<arguments.length;i++){
+args.push(arguments[i]);
+}
+
+function filtered(ele){
+return args.indexOf(ele)<0;   //返回数组args中不存在的元素
+}
+var newarr=arr.filter(filtered);
+return newarr;
+}
 
 15.Where do I belong
+先给数组排序，然后找到指定的值在数组中的位置，最后返回位置对应的索引
+举例：where([1,2,3,4], 1.5) 应该返回 1。因为1.5插入到数组[1,2,3,4]后变成[1,1.5,2,3,4]，而1.5对应的索引值就是1。
+同理，where([20,3,5], 19) 应该返回 2。因为数组会先排序为 [3,5,20]，19插入到数组[3,5,20]后变成[3,5,19,20]，而19对应的索引值就是2。
+方法：
+function where(arr,num){
+arr.push(num);
+arr.sort(function(a,b){
+return a-b;
+});
+return arr.indexOf(num);
+}
 
-16.Caesars Cipher
-
-
-
-
-
-
-
-
+16.Caesars Cipher：凯撒密码
+移位密码也就是密码中的字母会按照指定的数量来做移位
+一个常见的案例就是ROT13密码，字母会移位13个位置。由'A' ↔ 'N', 'B' ↔ 'O'，以此类推。
+写一个ROT13函数，实现输入加密字符串，输出解密字符串。
+所有的字母都是大写，不要转化任何非字母形式的字符(例如：空格，标点符号)，遇到这些特殊字符，跳过它们。
+思路：
+1.26个字母的unicode码在65（A）与90（Z）之间，第13位M（77）
+2.将str通过.charCodeAt()转为unicode编码并放入新数组
+3.其中非字母形式的字符直接放入.charAt()
+4.后13位字母减去13后放入；前13位字母加上13后放入
+5.通过.fromCharCode()转化为字母，将数组转化为字符串
+//静态 String.fromCharCode() 方法返回使用指定的Unicode值序列创建的字符串。
+//charCodeAt() 方法返回0到65535之间的整数，表示给定索引处的UTF-16代码单元
+方法：
+function rot13(str){
+var newarr=[];
+for(var i=0;i<str.length;i++){
+if(str.charCodeAt(i)<65 || str.charCodeAt(i)>90){
+newarr.push(str.charAt(i));
+}else if(str.charCodeAt(i)>77){
+newarr.push(String.fromCharCode(str.charCodeAt(i)-13));
+}else{
+newarr.push(String.fromCharCode(str.charCodeAt(i)+13));
+}
+}
+return newarr.join("");
+}
